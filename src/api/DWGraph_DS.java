@@ -78,7 +78,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     @Override
     public int nodeSize() {
-        return 0;
+        return mygraph.size();
     }
 
     @Override
