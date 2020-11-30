@@ -69,8 +69,6 @@ public class NodeData implements node_data, Comparable<NodeData> {
     tag=t;
     }
 
-
-
     @Override
     public String toString() {
         return " key=" + key+".";
