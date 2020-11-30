@@ -1,6 +1,6 @@
 package api;
 
-public class NodeData implements node_data {
+public class NodeData implements node_data, Comparable<NodeData> {
     private final int key;
     private static int counter=0;
     private int tag;
@@ -69,8 +69,16 @@ public class NodeData implements node_data {
     tag=t;
     }
 
+
+
     @Override
     public String toString() {
         return " key=" + key+".";
+    }
+
+    @Override
+    public int compareTo(NodeData o) {
+        if(this.weight - o.weight > 0) return 1;
+        return -1;
     }
 }
