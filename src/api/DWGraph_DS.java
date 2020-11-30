@@ -15,6 +15,7 @@ public class DWGraph_DS implements directed_weighted_graph {
         mygraph = new HashMap<>();
         edges = new HashMap<>();
         MC = 0;
+        numofedges=0;
     }
 
     @Override
