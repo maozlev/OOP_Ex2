@@ -14,6 +14,6 @@ public class EdgeLocation implements edge_location {
 
     @Override
     public double getRatio() {
-        return edge.getWeight();
-    } // Need to fix
+        return 0;
+    } // Apparently not gonna use this function
 }
