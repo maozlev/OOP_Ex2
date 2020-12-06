@@ -73,7 +73,7 @@ public class DWGraph_DS implements directed_weighted_graph {
     public node_data removeNode(int key) {
         if (getNode(key) == null)
             return null;
-        for (int n : edges.get(key).keySet()) { // not sure about it, need to check
+        for (int n : edges.get(key).keySet()) {
             edges.get(n).remove(key);
             numofedges--;
             MC++;
