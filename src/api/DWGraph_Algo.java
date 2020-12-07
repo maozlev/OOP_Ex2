@@ -44,6 +44,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         vis=new HashMap<>();
         stack= new Stack<>();
         Scc = new ArrayList<>();
+
+        for(node_data n: g.getV()) {
+            vis.put(n.getKey(), false);
+        }
+
         for (int i = 0; i < V; i++)
             if(!vis.get(i)) dfs(i);
 
@@ -57,7 +62,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         int min = low[i];
         for (edge_data e:g.getE(i)){
             if(!vis.get(e.getDest()))
-                dfs(i);
+                dfs(e.getDest());
             if(low[e.getDest()]<min)
                 min=low[e.getDest()];
         }
@@ -65,7 +70,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             low[i]=min;
             return;
         }
-        List<Integer> component = new ArrayList<Integer>();
+        List<Integer> component = new ArrayList<>();
         int k;
         do
         {
