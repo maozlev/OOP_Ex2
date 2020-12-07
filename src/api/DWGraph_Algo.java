@@ -8,6 +8,7 @@ import java.util.Queue;
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph g;
     private HashMap<Integer, Boolean> vis;
+    private int i;
 
 
     @Override
