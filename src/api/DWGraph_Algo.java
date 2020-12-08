@@ -1,5 +1,11 @@
 package api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
@@ -117,10 +123,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
         while (!pq.isEmpty()) {
             node_data u = pq.poll();
-            vis.replace(u.getKey(), true);
 
             for (edge_data n : g.getE(u.getKey())) {
-                if (!vis.get(n.getDest())) {
+                if (!vis.get(n.getSrc())) {
                     double alt = weights.get(u.getKey()) + g.getEdge(u.getKey(), n.getDest()).getWeight();
                     if (alt < weights.get(n.getDest())) {
                         weights.put(n.getDest(), alt);
@@ -129,6 +134,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
                     }
                 }
             }
+            vis.replace(u.getKey(), true); // mark node who saw all neighbors
         }
     }
     @Override
@@ -157,6 +163,19 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     @Override
     public boolean save(String file) {
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String json= gson.toJson(g);
+        System.out.println("json");
+        try{
+            PrintWriter pw = new PrintWriter(new File("grpah.json"));
+            pw.write(json);
+            pw.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
         return false;
     }
 
