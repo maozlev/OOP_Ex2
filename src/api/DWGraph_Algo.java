@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.util.*;
@@ -204,7 +205,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
     @Override
     public boolean load(String file) {
         try {
-            JSONObject graph = new JSONObject(new String(Files.readAllBytes(Paths.get(file))));
+            String r= new String(Files.readAllBytes(Paths.get(file)));
+            JSONObject graph = new JSONObject(r);
             JSONArray edges=graph.getJSONArray("Edges");
             JSONArray nodes=graph.getJSONArray("Nodes");
             directed_weighted_graph G= new DWGraph_DS();
