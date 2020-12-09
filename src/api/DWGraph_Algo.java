@@ -191,7 +191,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             }
             graph.add("Edges", Edges);
             graph.add("Nodes", Nodes);
-            PrintWriter pw = new PrintWriter(new File(file));
+            PrintWriter pw = new PrintWriter(new File(file+".json"));
             pw.write(graph.toString());
             pw.close();
         } catch (FileNotFoundException e) {
@@ -204,8 +204,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
     @Override
     public boolean load(String file) {
         try {
-            //String g = new String(Files.readAllBytes(Paths.get(file)));
-            System.out.println(Files.readAllBytes(Paths.get(file)));
             JSONObject graph = new JSONObject(new String(Files.readAllBytes(Paths.get(file))));
             JSONArray edges=graph.getJSONArray("Edges");
             JSONArray nodes=graph.getJSONArray("Nodes");
