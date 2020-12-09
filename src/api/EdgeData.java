@@ -3,14 +3,14 @@ package api;
 import java.util.Objects;
 
 public class EdgeData implements edge_data {
-    private int src, dest, tag;
-    private double weight;
+    private int src,dest,tag;
+    private double w;
     private String info;
 
-    public EdgeData(int src,int dest, double weight) {
+    public EdgeData(int src,int dest, double w) {
         this.src=src;
         this.dest=dest;
-        this.weight=weight;
+        this.w=w;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class EdgeData implements edge_data {
 
     @Override
     public double getWeight() {
-        return weight;
+        return w;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class EdgeData implements edge_data {
         return "Edge:{" +
                 "src=" + src +
                 ", dest=" + dest +
-                ", weight=" + weight +'}';
+                ", weight=" + w +'}';
     }
 
     @Override
@@ -61,11 +61,11 @@ public class EdgeData implements edge_data {
         EdgeData edgeData = (EdgeData) o;
         return src == edgeData.src &&
                 dest == edgeData.dest &&
-                Double.compare(edgeData.weight, weight) == 0;
+                Double.compare(edgeData.w, w) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(src, dest, weight);
+        return Objects.hash(src, dest, w);
     }
 }

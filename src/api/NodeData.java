@@ -4,22 +4,26 @@ public class NodeData implements node_data, Comparable<NodeData> {
     private final int key;
     private static int counter=0;
     private int tag;
-    private geo_location g;
+    private geo_location pos;
     private double weight;
     private String info;
 
     public NodeData(){
         key=counter++;
         tag=0;
-        g=null;
         weight=0;
         info=null;
+        double x=0,y=0,z=0;
+        geo_location p = new GeoLocation(x,y,z);
+        pos=p;
     }
 
     public NodeData(int key){
         this.key=key;
         tag=0;
-        g=null;
+        double x=0,y=0,z=0;
+        geo_location p = new GeoLocation(x,y,z);
+        pos=p;
         weight=0;
         info=null;
     }
@@ -31,12 +35,12 @@ public class NodeData implements node_data, Comparable<NodeData> {
 
     @Override
     public geo_location getLocation() {
-        return g;
+        return pos;
     }
 
     @Override
     public void setLocation(geo_location p) {
-        g=p;
+        pos=p;
     }
 
     @Override

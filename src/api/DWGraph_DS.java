@@ -6,65 +6,65 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class DWGraph_DS implements directed_weighted_graph {
-    private HashMap<Integer, node_data> mygraph;
-    private HashMap<Integer, HashMap<Integer, edge_data>> edges;
+    private HashMap<Integer, HashMap<Integer, edge_data>> Edges;
+    private HashMap<Integer, node_data> Nodes;
     private int MC, numofedges;
 
 
     public DWGraph_DS() {
-        mygraph = new HashMap<>();
-        edges = new HashMap<>();
+        Nodes = new HashMap<>();
+        Edges = new HashMap<>();
         MC = 0;
         numofedges=0;
     }
 
     @Override
     public node_data getNode(int key) {
-        return mygraph.get(key);
+        return Nodes.get(key);
     }
 
     @Override
     public edge_data getEdge(int src, int dest) {
-        return edges.get(src).get(dest);
+        return Edges.get(src).get(dest);
     }
 
     @Override
     public void addNode(node_data n) {
-        if (!mygraph.containsKey(n.getKey())) {
-            mygraph.put(n.getKey(), n);
-            edges.put(n.getKey(), new HashMap<>());
+        if (!Nodes.containsKey(n.getKey())) {
+            Nodes.put(n.getKey(), n);
+            Edges.put(n.getKey(), new HashMap<>());
             MC++;
         }
     }
 
     @Override
     public void connect(int src, int dest, double w) {
-        if (!mygraph.containsKey(src) || !mygraph.containsKey(dest)) {
+        if (!Nodes.containsKey(src) || !Nodes.containsKey(dest)) {
             return;
         }
         if (src == dest) return;
         edge_data edge = new EdgeData(src, dest, w);
-        if (edges.get(src).containsKey(dest)) {
-            edges.get(src).replace(dest, edge);
+        if (Edges.get(src).containsKey(dest)) {
+            Edges.get(src).replace(dest, edge);
             return;
         }
-        edges.get(src).put(dest, edge);
+        Edges.get(src).put(dest, edge);
         numofedges++;
         MC++;
     }
 
     @Override
     public Collection<node_data> getV() {
-        return mygraph.values();
+        return Nodes.values();
     }
 
     @Override
     public Collection<edge_data> getE(int node_id) {
-        if (!mygraph.containsKey(node_id)) return null;
-        Set<Integer> keys = edges.get(node_id).keySet(); // Get neighbors keys
+        if (!Nodes.containsKey(node_id)) return null;
+        Set<Integer> keys = Edges.get(node_id).keySet(); // Get neighbors keys
         ArrayList<edge_data> edge_list = new ArrayList<>(keys.size()); // ArrayList for collection
         for (Integer k : keys) { // iterate through the keys
-            edge_list.add(edges.get(node_id).get(k));
+            edge_list.add(Edges.get(node_id).get(k));
         }
         return edge_list;
     }
@@ -73,30 +73,30 @@ public class DWGraph_DS implements directed_weighted_graph {
     public node_data removeNode(int key) {
         if (getNode(key) == null)
             return null;
-        for (int n : edges.get(key).keySet()) {
-            edges.get(n).remove(key);
+        for (int n : Edges.get(key).keySet()) {
+            Edges.get(n).remove(key);
             numofedges--;
             MC++;
         }
 
-        edges.remove(key);
+        Edges.remove(key);
         MC++;
-        return mygraph.remove(key);
+        return Nodes.remove(key);
     }
 
     @Override
     public edge_data removeEdge(int src, int dest) {
-        if (!edges.containsKey(src) || !edges.containsKey(dest) || !edges.get(src).containsKey(dest))
+        if (!Edges.containsKey(src) || !Edges.containsKey(dest) || !Edges.get(src).containsKey(dest))
             return null;
 
         numofedges--;
         MC++;
-        return edges.get(src).remove(dest);
+        return Edges.get(src).remove(dest);
     }
 
     @Override
     public int nodeSize() {
-        return mygraph.size();
+        return Nodes.size();
     }
 
     @Override
@@ -111,6 +111,13 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     @Override
     public String toString() {
-        return "" + edges;
+        String st="";
+        for (node_data n:getV()) {
+            st+="key: "+n.getKey()+"\n";
+            for (edge_data e:getE(n.getKey())) {
+                st+="dest: "+e.getDest()+" w: "+e.getWeight()+"\n";
+            }
+        }
+        return st;
     }
 }
