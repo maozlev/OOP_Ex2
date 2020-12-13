@@ -111,13 +111,13 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     @Override
     public String toString() {
-        String st="";
+        StringBuilder st= new StringBuilder();
         for (node_data n:getV()) {
-            st+="key: "+n.getKey()+"\n";
+            st.append("key: ").append(n.getKey()).append("\n");
             for (edge_data e:getE(n.getKey())) {
-                st+="dest: "+e.getDest()+" w: "+e.getWeight()+"\n";
+                st.append("dest: ").append(e.getDest()).append(" w: ").append(e.getWeight()).append("\n");
             }
         }
-        return st;
+        return st.toString();
     }
 }

@@ -1,20 +1,15 @@
 package api;
 
-import com.google.gson.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyStore;
 import java.util.*;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
@@ -171,31 +166,31 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     @Override
     public boolean save(String file) {
-        JsonObject graph = new JsonObject();
-        JsonArray Edges = new JsonArray();
-        JsonArray Nodes = new JsonArray();
+        JSONObject graph = new JSONObject();
+        JSONArray Edges = new JSONArray();
+        JSONArray Nodes = new JSONArray();
         System.out.println("json");
         try {
             for (node_data n : g.getV()) {
                 String st=n.getLocation().x() + "," + n.getLocation().y() + "," + n.getLocation().z();
-                JsonObject node = new JsonObject();
-                node.addProperty("pos", st);
-                node.addProperty("id", n.getKey());
-                Nodes.add(node);
+                JSONObject node = new JSONObject();
+                node.put("pos",st);
+                node.put("id", n.getKey());
+                Nodes.put(node);
                 for (edge_data e : g.getE(n.getKey())) {
-                    JsonObject edge = new JsonObject();
-                    edge.addProperty("src", e.getSrc());
-                    edge.addProperty("w", e.getWeight());
-                    edge.addProperty("dest", e.getDest());
-                    Edges.add(edge);
+                    JSONObject edge = new JSONObject();
+                    edge.put("src", e.getSrc());
+                    edge.put("w", e.getWeight());
+                    edge.put("dest", e.getDest());
+                    Edges.put(edge);
                 }
             }
-            graph.add("Edges", Edges);
-            graph.add("Nodes", Nodes);
+            graph.put("Edges", Edges);
+            graph.put("Nodes", Nodes);
             PrintWriter pw = new PrintWriter(new File(file+".json"));
             pw.write(graph.toString());
             pw.close();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | JSONException e) {
             e.printStackTrace();
             return false;
         }
@@ -236,6 +231,16 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             e.printStackTrace();
         }
         return true;
+    }
+    public String toString() {
+        StringBuilder st= new StringBuilder();
+        for (node_data n:g.getV()) {
+            st.append("key: ").append(n.getKey()).append("\n");
+            for (edge_data e:g.getE(n.getKey())) {
+                st.append("dest: ").append(e.getDest()).append(" w: ").append(e.getWeight()).append("\n");
+            }
+        }
+        return st.toString();
     }
 }
 
