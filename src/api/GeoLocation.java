@@ -32,4 +32,11 @@ public class GeoLocation implements geo_location {
         double t = Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2);
         return Math.sqrt(t);
     }
+
+    @Override
+    public String toString() {
+        return  "x=" + x +
+                ", y=" + y +
+                ", z=" + z ;
+    }
 }
