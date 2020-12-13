@@ -233,14 +233,40 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return true;
     }
     public String toString() {
-        StringBuilder st= new StringBuilder();
-        for (node_data n:g.getV()) {
-            st.append("key: ").append(n.getKey()).append("\n");
-            for (edge_data e:g.getE(n.getKey())) {
-                st.append("dest: ").append(e.getDest()).append(" w: ").append(e.getWeight()).append("\n");
+        JSONObject graph = new JSONObject();
+        JSONArray Edges = new JSONArray();
+        JSONArray Nodes = new JSONArray();
+        try {
+            for (node_data n : g.getV()) {
+                String st=n.getLocation().x() + "," + n.getLocation().y() + "," + n.getLocation().z();
+                JSONObject node = new JSONObject();
+                node.put("pos",st);
+                node.put("id", n.getKey());
+                Nodes.put(node);
+                for (edge_data e : g.getE(n.getKey())) {
+                    JSONObject edge = new JSONObject();
+                    edge.put("src", e.getSrc());
+                    edge.put("w", e.getWeight());
+                    edge.put("dest", e.getDest());
+                    Edges.put(edge);
+                }
             }
+            graph.put("Edges", Edges);
+            graph.put("Nodes", Nodes);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return st.toString();
+        return String.valueOf(graph);
+
+//
+//        StringBuilder st= new StringBuilder();
+//        for (node_data n:g.getV()) {
+//            st.append("key: ").append(n.getKey()).append("\n");
+//            for (edge_data e:g.getE(n.getKey())) {
+//                st.append("dest: ").append(e.getDest()).append(" w: ").append(e.getWeight()).append("\n");
+//            }
+//        }
+//        return st.toString();
     }
 }
 
