@@ -1,5 +1,6 @@
 package gameClient;
 
+import api.GeoLocation;
 import api.directed_weighted_graph;
 import api.edge_data;
 import api.geo_location;
@@ -56,6 +57,31 @@ public class My_Arena {
         }
         return ans;
     }
+
+    public static ArrayList<My_Pokemon> json2Pokemons(String fs) {
+        ArrayList<My_Pokemon> ans = new  ArrayList<My_Pokemon>();
+        try {
+            JSONObject ttt = new JSONObject(fs);
+            JSONArray ags = ttt.getJSONArray("Pokemons");
+            for(int i=0;i<ags.length();i++) {
+                JSONObject pp = ags.getJSONObject(i);
+                JSONObject pk = pp.getJSONObject("Pokemon");
+                int t = pk.getInt("type");
+                double v = pk.getDouble("value");
+                double x, y, z;
+                String[] arr = (pk.getString("pos")).split(",");
+                x = Double.parseDouble(arr[0]);
+                y = Double.parseDouble(arr[1]);
+                z = Double.parseDouble(arr[2]);
+                geo_location m = new GeoLocation(x, y, z);
+                My_Pokemon f = new My_Pokemon(m, t, v, null);
+                ans.add(f);
+            }
+        }
+        catch (JSONException e) {e.printStackTrace();}
+        return ans;
+    }
+
 
     private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest ) {
         boolean ans = false;

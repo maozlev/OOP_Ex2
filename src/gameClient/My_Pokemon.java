@@ -15,6 +15,17 @@ public class My_Pokemon implements Comparable<My_Pokemon> {
         _type = t;
         _value = v;
         _pos = p;
+        min_dist = -1;
+        min_ro = -1;
+    }
+
+    public My_Pokemon(geo_location p, int t, double v, edge_data e) {
+        _type = t;
+        _value = v;
+        set_edge(e);
+        _pos = p;
+        min_dist = -1;
+        min_ro = -1;
     }
 
     public edge_data get_edge() {

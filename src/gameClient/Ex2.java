@@ -54,8 +54,7 @@ public class Ex2 implements Runnable{
             }
         }
         load_agents(game.getAgents());
-        System.out.println(list_of_agents.toString()
-        );
+        System.out.println(list_of_agents.toString());
 
 
         game.startGame();
@@ -118,7 +117,7 @@ public class Ex2 implements Runnable{
         String lg = game.move();
         arena.setAgents(list_of_agents);
         String fs = game.getPokemons();
-        List<My_Pokemon> ffs = Arena.json2Pokemons(fs); // need to implement in My_Arena
+        List<My_Pokemon> ffs = My_Arena.json2Pokemons(fs); // need to implement in My_Arena
         arena.setPokemons(ffs);
         for (int i = 0; i < list_of_agents.size(); i++) {
             CL_Agent ag = list_of_agents.get(i);
