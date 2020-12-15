@@ -32,6 +32,16 @@ public class CL_Agent {
 			_id = -1;
 			setSpeed(0);
 		}
+
+	public CL_Agent(directed_weighted_graph g, int start_node, int id) {
+		_gg = g;
+		setMoney(0);
+		this._curr_node = _gg.getNode(start_node);
+		_pos = _curr_node.getLocation();
+		_id = id;
+		setSpeed(0);
+	}
+
 		public void update(String json) {
 			JSONObject line;
 			try {

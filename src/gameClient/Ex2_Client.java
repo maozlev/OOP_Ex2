@@ -27,7 +27,9 @@ public class Ex2_Client implements Runnable{
 	//	int id = 999;
 	//	game.login(id);
 		String g = game.getGraph();
+		System.out.println(g);
 		String pks = game.getPokemons();
+		System.out.println(pks);
 		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
 		init(game);
 
