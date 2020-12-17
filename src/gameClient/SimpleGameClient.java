@@ -26,9 +26,6 @@ public class SimpleGameClient {
 		//game.login(12345);  // please use your ID only as a key. uncomment this will upload your results to the server
 		node_data nn = gg.getNode(10);
 		String info = game.toString();
-		System.out.println(info);
-		System.out.println(g);
-		System.out.println(game.getPokemons());
 		int src_node = 0;  // arbitrary node, you should start at one of the fruits
 		game.addAgent(src_node);
 		game.startGame();
@@ -46,6 +43,7 @@ public class SimpleGameClient {
 					int new_dest = nextNode(gg, src);
 					game.chooseNextEdge(id, new_dest);
 					System.out.println(i+") "+a+") "+r+"  move to node: "+new_dest);
+					System.out.println(game.getPokemons());
 				}
 			}
 			i++;

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class My_Arena {
@@ -23,7 +24,7 @@ public class My_Arena {
     private static Point3D MAX = new Point3D(0, 100,0);
 
     public My_Arena() {;
-        _info = new ArrayList<String>();
+        _info = new ArrayList<>();
     }
     private My_Arena(directed_weighted_graph g, List<CL_Agent> r, List<My_Pokemon> p) {
         _gg = g;
@@ -48,24 +49,29 @@ public class My_Arena {
         return _info;
     }
 
-    public static List<CL_Agent> getAgents(String aa, directed_weighted_graph gg) {
-        ArrayList<CL_Agent> ans = new ArrayList<>();
+//
+
+    public static List<CL_Agent> getAgents(String s, directed_weighted_graph g) {
+        List<CL_Agent> ls = new ArrayList<>();
         try {
-            JSONObject ttt = new JSONObject(aa);
-            JSONArray ags = ttt.getJSONArray("Agents");
-            for(int i=0;i<ags.length();i++) {
-                CL_Agent c = new CL_Agent(gg,0);
-                c.update(ags.get(i).toString());
-                ans.add(c);
+            JSONObject agent = new JSONObject(s);
+            JSONArray agents = agent.getJSONArray("Agents");
+            for (int i = 0; i < agents.length(); i++) {
+                JSONObject a = agents.getJSONObject(i).getJSONObject("Agent");
+                int id = a.getInt("id");
+                int src= a.getInt("src");
+                double x, y, z;
+                CL_Agent aa = new CL_Agent(g,src,id);
+                ls.add(aa);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return ans;
+        return ls;
     }
 
     public static ArrayList<My_Pokemon> json2Pokemons(String fs) {
-        ArrayList<My_Pokemon> ans = new  ArrayList<My_Pokemon>();
+        ArrayList<My_Pokemon> ans = new ArrayList<>();
         try {
             JSONObject ttt = new JSONObject(fs);
             JSONArray ags = ttt.getJSONArray("Pokemons");
@@ -111,8 +117,21 @@ public class My_Arena {
         return isOnEdge(p,src, dest, g);
     }
 
-    public static void updateEdge(My_Pokemon fr, directed_weighted_graph g) {
-        //	oop_edge_data ans = null;
+    public static edge_data updateEdge(My_Pokemon fr, directed_weighted_graph g) {
+        edge_data ans = null;
+        for (node_data v : g.getV()) {
+            for (edge_data e : g.getE(v.getKey())) {
+                boolean f = isOnEdge(fr.getLocation(), e, fr.getType(), g);
+                if (f) {
+                    fr.set_edge(e);
+                    ans = e;
+                }
+            }
+        }
+        return ans;
+    }
+
+    public static void set_real_edge(My_Pokemon fr, directed_weighted_graph g) {
         for (node_data v : g.getV()) {
             for (edge_data e : g.getE(v.getKey())) {
                 boolean f = isOnEdge(fr.getLocation(), e, fr.getType(), g);
@@ -122,6 +141,7 @@ public class My_Arena {
             }
         }
     }
+
 
     private static Range2D GraphRange(directed_weighted_graph g) {
         Iterator<node_data> itr = g.getV().iterator();
@@ -148,5 +168,110 @@ public class My_Arena {
     public static Range2Range w2f(directed_weighted_graph g, Range2D frame) {
         Range2D world = GraphRange(g);
         return new Range2Range(world, frame);
+    }
+
+    public static directed_weighted_graph load_graph (String s, directed_weighted_graph g) {
+        g = new DWGraph_DS();
+        try {
+            JSONObject graph = new JSONObject(s);
+            JSONArray edges=graph.getJSONArray("Edges");
+            JSONArray nodes=graph.getJSONArray("Nodes");
+            for (int i = 0; i < nodes.length() ; i++) {
+                JSONObject n= nodes.getJSONObject(i);
+                int key= n.getInt("id");
+                node_data p= new NodeData(key);
+                double x,y,z;
+                String[] arr= (n.getString("pos")).split(",");
+                x=Double.parseDouble(arr[0]);
+                y=Double.parseDouble(arr[1]);
+                z=Double.parseDouble(arr[2]);
+                geo_location m= new GeoLocation(x,y,z);
+                p.setLocation(m);
+                g.addNode(p);
+            }
+            for (int i = 0; i <edges.length(); i++) {
+                JSONObject e= edges.getJSONObject(i);
+                int src = e.getInt("src");
+                double w = e.getDouble("w");
+                int dest = e.getInt("dest");
+                g.connect(src,dest,w);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return g;
+    }
+
+    public static int load_num_of_agents(String s){
+        int t=0;
+        try {
+            JSONObject o = new JSONObject(s);
+            t= o.getJSONObject("GameServer").getInt("agents");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    public static void first_agents (int num_agents, List<My_Pokemon> pokemons, directed_weighted_graph g, game_service game, List<CL_Agent> agents) {
+        for (int i = 0; i < num_agents; i++) {
+            My_Arena.updateEdge(pokemons.get(i), g);
+            CL_Agent tmp_agent;
+            int src = pokemons.get(i).get_edge().getSrc();
+            int dest = pokemons.get(i).get_edge().getDest();
+            if(pokemons.get(i).getType() < 0 && src > dest) {
+                game.addAgent(src);
+                tmp_agent = new CL_Agent(g, src);
+                agents.add(tmp_agent);
+            }
+            if(pokemons.get(i).getType() > 0 && src < dest) {
+                game.addAgent(dest);
+                tmp_agent = new CL_Agent(g, dest);
+                agents.add(tmp_agent);
+            }
+        }
+    }
+
+    public static List<My_Pokemon> load_pokemon (String s) {
+        List<My_Pokemon> list_of_pokemons = new LinkedList<>();
+        try {
+            JSONObject pokemon = new JSONObject(s);
+            JSONArray pokemons = pokemon.getJSONArray("Pokemons");
+            for (int i = 0; i < pokemons.length(); i++) {
+                JSONObject p = pokemons.getJSONObject(i).getJSONObject("Pokemon");
+                double value = p.getDouble("value");
+                int type= p.getInt("type");
+                double x, y, z;
+                String[] arr = (p.getString("pos")).split(",");
+                x = Double.parseDouble(arr[0]);
+                y = Double.parseDouble(arr[1]);
+                z = Double.parseDouble(arr[2]);
+                geo_location m = new GeoLocation(x, y, z);
+                My_Pokemon pp= new My_Pokemon(m,type,value);
+                list_of_pokemons.add(pp);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  list_of_pokemons;
+    }
+
+    public static List<CL_Agent> load_agents (String s,directed_weighted_graph g) {
+        ArrayList<CL_Agent> list_of_agents = new ArrayList<>();
+        try {
+            JSONObject agent = new JSONObject(s);
+            JSONArray agents = agent.getJSONArray("Agents");
+            for (int i = 0; i < agents.length(); i++) {
+                JSONObject a = agents.getJSONObject(i).getJSONObject("Agent");
+                int id = a.getInt("id");
+                int src= a.getInt("src");
+                double x, y, z;
+                CL_Agent aa= new CL_Agent(g, src,id);
+                list_of_agents.add(aa);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list_of_agents;
     }
 }
