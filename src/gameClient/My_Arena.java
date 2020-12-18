@@ -16,10 +16,11 @@ import java.util.List;
 
 public class My_Arena {
     public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
-    private directed_weighted_graph _gg;
-    private List<CL_Agent> _agents;
-    private List<My_Pokemon> _pokemons;
+    private static directed_weighted_graph _gg;
+    private static List<CL_Agent> _agents;
+    private static List<My_Pokemon> _pokemons;
     private List<String> _info;
+    private static long time;
     private static Point3D MIN = new Point3D(0, 100,0);
     private static Point3D MAX = new Point3D(0, 100,0);
 
@@ -28,17 +29,18 @@ public class My_Arena {
     }
     private My_Arena(directed_weighted_graph g, List<CL_Agent> r, List<My_Pokemon> p) {
         _gg = g;
-        this.setAgents(r);
-        this.setPokemons(p);
+        setAgents(r);
+        setPokemons(p);
     }
 
-    public void setPokemons(List<My_Pokemon> f) {
-        this._pokemons = f;
+    public static void setPokemons(List<My_Pokemon> f) {
+        _pokemons = f;
     }
-    public void setAgents(List<CL_Agent> f) {
-        this._agents = f;
+    public static void setAgents(List<CL_Agent> f) {
+        _agents = f;
     }
-    public void setGraph(directed_weighted_graph g) {this._gg =g;}
+    public static void setGraph(directed_weighted_graph g) {_gg =g;}
+    public static void setTime(long t) { time = t;}
 
     public List<CL_Agent> getAgents() {return _agents;}
     public List<My_Pokemon> getPokemons() {return _pokemons;}
@@ -50,6 +52,29 @@ public class My_Arena {
     }
 
 //
+
+    public static void moveAgents(game_service game, directed_weighted_graph g, int num_agents) {
+        String move = game.move();
+        List<CL_Agent> agents = getAgents(move, g);
+        setAgents(agents);
+        List<My_Pokemon> pokemons = json2Pokemons(game.getPokemons());
+        setPokemons(pokemons);
+        System.out.println(pokemons.toString());
+
+        CL_Agent ag;
+        for (int i = 0; i < num_agents; i++) {
+            ag = agents.get(i);
+            int src = ag.getSrcNode();
+            int dest = ag.getNextNode();
+            int id = ag.getID();
+            double v = ag.getValue();
+            if (dest == -1) {
+                dest = Ex2_good_news.nextNode(g, src, pokemons);
+                game.chooseNextEdge(id, dest);
+                System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
+            }
+        }
+    }
 
     public static List<CL_Agent> getAgents(String s, directed_weighted_graph g) {
         List<CL_Agent> ls = new ArrayList<>();
@@ -170,8 +195,8 @@ public class My_Arena {
         return new Range2Range(world, frame);
     }
 
-    public static directed_weighted_graph load_graph (String s, directed_weighted_graph g) {
-        g = new DWGraph_DS();
+    public static directed_weighted_graph load_graph(String s) {
+        directed_weighted_graph g = new DWGraph_DS();
         try {
             JSONObject graph = new JSONObject(s);
             JSONArray edges=graph.getJSONArray("Edges");
@@ -219,6 +244,7 @@ public class My_Arena {
             CL_Agent tmp_agent;
             int src = pokemons.get(i).get_edge().getSrc();
             int dest = pokemons.get(i).get_edge().getDest();
+
             if(pokemons.get(i).getType() < 0 && src > dest) {
                 game.addAgent(src);
                 tmp_agent = new CL_Agent(g, src);
@@ -273,5 +299,9 @@ public class My_Arena {
             e.printStackTrace();
         }
         return list_of_agents;
+    }
+
+    public static void isClose () {
+
     }
 }

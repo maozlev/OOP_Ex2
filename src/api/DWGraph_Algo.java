@@ -104,7 +104,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        if (shortestPath(src, dest) == null) return -1;
+        if (shortestPath(src, dest) == null) return 0;
         return weights.get(dest);
     }
 
