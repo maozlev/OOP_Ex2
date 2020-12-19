@@ -1,19 +1,15 @@
 package gameClient;
-
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.geo_location;
-import api.node_data;
-import gameClient.util.Point3D;
+import api.*;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class Frame extends JFrame {
+public class Frame extends JFrame implements ActionListener {
+
     private int _ind;
     private My_Arena arena;
     private gameClient.util.Range2Range _w2f;
@@ -36,17 +32,27 @@ public class Frame extends JFrame {
     public void paint(Graphics g) {
         int w = this.getWidth();
         int h = this.getHeight();
-        g.clearRect(0, 0, w, h);
-        //	updateFrame();
-        drawPokemons(g);
-        drawGraph(g);
-        drawAgants(g);
-        drawInfo(g);
+        Image image;
+        Graphics graphics;
+        image = createImage(w, h);
+        graphics = image.getGraphics();
+        graphics.clearRect(0, 0, w, h);
+        drawGraph(graphics);
+        drawPokemons(graphics);
+        drawAgants(graphics);
+        drawInfo(graphics);
+        g.drawImage(image, 0, 0, this);
+//
+
+//        drawPokemons(g);
+//        drawGraph(g);
+//        drawAgants(g);
+//        drawInfo(g);
 
     }
     private void drawInfo(Graphics g) {
         java.util.List<String> str = arena.get_info();
-        String dt = "none";
+        String dt = "asif";
         for(int i=0;i<str.size();i++) {
             g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
         }
@@ -55,10 +61,10 @@ public class Frame extends JFrame {
     private void drawGraph(Graphics g) {
         directed_weighted_graph gg = arena.getGraph();
         for (node_data n : gg.getV()) {
-            g.setColor(Color.blue);
-            drawNode(n, 5, g);
+            g.setColor(Color.black);
+            drawNode(n, 7, g);
             for (edge_data e : gg.getE(n.getKey())) {
-                g.setColor(Color.gray);
+                g.setColor(Color.blue);
                 drawEdge(e, g);
             }
         }
@@ -113,5 +119,10 @@ public class Frame extends JFrame {
         geo_location d0 = this._w2f.world2frame(d);
         g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
         //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

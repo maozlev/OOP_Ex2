@@ -17,8 +17,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
     private HashMap<Integer, Boolean> vis;
     private HashMap<Integer, node_data> daddy;
     private int[] low;
-    private Stack<Integer> stack;
     private int count;
+    private Stack<Integer> stack;
     private List<List<Integer>> Scc;
     private HashMap<Integer, Double> weights;
 
@@ -108,60 +108,50 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return weights.get(dest);
     }
 
-    private void Dijkstra(node_data src) {
-        Queue<node_data> pq = new PriorityQueue<>();
-        vis = new HashMap<>();
-        weights = new HashMap<>();
-        daddy = new HashMap<>();
-
-        for (node_data n : g.getV()) {
-            vis.put(n.getKey(), false);
-            weights.put(n.getKey(), Double.MAX_VALUE);
-            daddy.put(n.getKey(), null);
-        }
-
-        g.getNode(src.getKey()).setWeight(0);
-        weights.replace(src.getKey(), 0.0);
-        pq.add(src);
-
-        while (!pq.isEmpty()) {
-            node_data u = pq.poll();
-
-            for (edge_data n : g.getE(u.getKey())) {
-                if (!vis.get(n.getSrc())) {
-                    double alt = weights.get(u.getKey()) + g.getEdge(u.getKey(), n.getDest()).getWeight();
-                    if (alt < weights.get(n.getDest())) {
-                        weights.put(n.getDest(), alt);
-                        daddy.put(n.getDest(), u);
-                        pq.add(g.getNode(n.getDest()));
-                    }
-                }
-            }
-            vis.replace(u.getKey(), true); // mark node who saw all neighbors
-        }
-    }
-
-    @Override
     public List<node_data> shortestPath(int src, int dest) {
         if (g.getNode(src) == null || g.getNode(dest) == null) // Checking if the keys exist
             return null;
-        Dijkstra(g.getNode(src)); //Goes through the graph
 
-        Stack<node_data> path = new Stack<>(); // To keep path in stack
-        LinkedList<node_data> reverse = new LinkedList<>(); // To reverse the path from end to start
-
-        path.add(g.getNode(dest)); // Adding the destination
-        for (node_data i = daddy.get(dest); i != null; i = daddy.get(i.getKey())) { // Going backwards in Prev
-            path.add(i);
+        weights = new HashMap<>();
+        daddy = new HashMap<>();
+        for (node_data n : g.getV()) {
+            weights.put(n.getKey(), Double.MAX_VALUE);
+            daddy.put(n.getKey(), null);
         }
-        if (path.peek() != g.getNode(src)) // If the path doesn't contain source, that means it's not connected from source to dest
-            return null;
+        weights.put(src, 0.0);
+        g.getNode(src).setWeight(0.0);
+        Queue<node_data> q = new LinkedList<>();
+        q.add(g.getNode(src));
+        while (!q.isEmpty()) {
+            int tmp = q.poll().getKey();
+            for (edge_data e : g.getE(tmp)) {
+                double cur_dis = weights.get(tmp);
+                double full_dis = cur_dis + e.getWeight();
+                double dest_dis = weights.get(e.getDest());
+                if (full_dis < dest_dis) {
+                    weights.put(e.getDest(), full_dis);
+                    g.getNode(e.getDest()).setWeight(full_dis);
+                    daddy.put(e.getDest(), g.getNode(tmp));
+                    q.add(g.getNode(e.getDest()));
+                }
 
-        while (!path.isEmpty()) {
-            reverse.add(path.pop()); // reversing the path
+            }
         }
 
-        return reverse;
+        Stack<node_data> rev = new Stack<>();
+        node_data p = g.getNode(dest);
+        rev.add(p);
+        for (int i = 1; i < daddy.size(); i++) {
+            if (daddy.get(p.getKey()) == null) break;
+            rev.add(daddy.get(p.getKey()));
+            p = g.getNode(daddy.get(p.getKey()).getKey());
+        }
+        List<node_data> path = new LinkedList<>();
+        while (!rev.isEmpty()) {
+            path.add(rev.pop());
+        }
+
+        return path;
     }
 
     @Override

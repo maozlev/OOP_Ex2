@@ -13,14 +13,15 @@ public class Ex2__ implements Runnable {
     private static List<node_data> path;
 
     public static void main(String[] a) {
+
         Thread client = new Thread(new Ex2__());
         client.start();
     }
 
     @Override
     public void run() {
-        int scenario_num = 0;
-        game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
+        int scenario_num = 11;
+        game_service game = Game_Server_Ex2.getServer(scenario_num);
         //	int id = 999;
         //	game.login(id);
         String g = game.getGraph();
@@ -33,11 +34,16 @@ public class Ex2__ implements Runnable {
         game.startGame();
         _win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
         int ind=0;
-        long dt=100;
+        long dt = 250;
+        long end = game.timeToEnd();
 
         while(game.isRunning()) {
             moveAgants(game, gg);
             try {
+                My_Arena.setTime(game.timeToEnd());
+                if ((double)(4*(end - game.timeToEnd())) >= end) dt = 110;
+                if ((double)(2*(end - game.timeToEnd())) >= end) dt = 80;
+                if (((1.3)*(end - game.timeToEnd())) >= end) dt = 60;
                 if(ind%1==0) {_win.repaint();}
                 Thread.sleep(dt);
                 ind++;
@@ -138,9 +144,8 @@ public class Ex2__ implements Runnable {
             line = new JSONObject(info);
             JSONObject ttt = line.getJSONObject("GameServer");
             int rs = ttt.getInt("agents");
-            System.out.println(info);
-            System.out.println(game.getPokemons());
             ArrayList<My_Pokemon> cl_fs = My_Arena.json2Pokemons(game.getPokemons());
+            //cl_fs.sort(My_Pokemon::compareTo);
             for (My_Pokemon cl_f : cl_fs) {
                 My_Arena.updateEdge(cl_f, gg);
             }
