@@ -10,6 +10,7 @@ import java.util.*;
 public class Ex2__ implements Runnable{
     private static Frame _win;
     private static My_Arena _ar;
+    private static List<node_data> path;
     public static void main(String[] a) {
         Thread client = new Thread(new Ex2__());
         client.start();
@@ -104,14 +105,15 @@ public class Ex2__ implements Runnable{
                 mewtwo = mew;
             }
         }
-        List<node_data> path;
         edge_data e = My_Arena.updateEdge(mewtwo,g);
         System.out.println(e.toString());
+
+        if (path.size() <= 1) {
         path = _g.shortestPath(src,e.getSrc());
         path.add(g.getNode(e.getDest()));
         System.out.println(path.toString());
+        }
 
-        if (path.size() == 1) return -1;
         return path.remove(1).getKey();
     }
 
@@ -120,6 +122,7 @@ public class Ex2__ implements Runnable{
         String fs = game.getPokemons();
         directed_weighted_graph gg = My_Arena.load_graph(g);
         _ar = new My_Arena();
+        path = new LinkedList<>();
         My_Arena.setGraph(gg);
         My_Arena.setPokemons(My_Arena.json2Pokemons(fs));
         _win = new Frame("test Ex2");
