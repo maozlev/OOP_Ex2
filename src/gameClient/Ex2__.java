@@ -7,10 +7,11 @@ import org.json.JSONObject;
 
 import java.util.*;
 
-public class Ex2__ implements Runnable{
+public class Ex2__ implements Runnable {
     private static Frame _win;
     private static My_Arena _ar;
     private static List<node_data> path;
+
     public static void main(String[] a) {
         Thread client = new Thread(new Ex2__());
         client.start();
