@@ -10,7 +10,7 @@ public class DWGraph_DS implements directed_weighted_graph {
     private HashMap<Integer, node_data> Nodes;
     private int MC, numofedges;
 
-
+    // Constructor
     public DWGraph_DS() {
         Nodes = new HashMap<>();
         Edges = new HashMap<>();
@@ -18,16 +18,30 @@ public class DWGraph_DS implements directed_weighted_graph {
         numofedges=0;
     }
 
+    /**
+     * returns the node_data by the node_id,
+     * @param key - the node_id
+     * @return the node_data by the node_id, null if none.
+     */
     @Override
     public node_data getNode(int key) {
         return Nodes.get(key);
     }
 
+    /**
+     * returns the data of the edge (src,dest), null if none.
+     * @param src - start node
+     * @param dest - end (target) node
+     */
     @Override
     public edge_data getEdge(int src, int dest) {
         return Edges.get(src).get(dest);
     }
 
+    /**
+     * adds a new node to the graph with the given node_data.
+     * @param n - new node
+     */
     @Override
     public void addNode(node_data n) {
         if (!Nodes.containsKey(n.getKey())) {
@@ -37,6 +51,12 @@ public class DWGraph_DS implements directed_weighted_graph {
         }
     }
 
+    /**
+     * Connects an edge with weight w between node src to node dest.
+     * @param src - the source of the edge.
+     * @param dest - the destination of the edge.
+     * @param w - positive weight representing the cost (aka time, price, etc) between src-->dest.
+     */
     @Override
     public void connect(int src, int dest, double w) {
         if (!Nodes.containsKey(src) || !Nodes.containsKey(dest)) {
@@ -53,11 +73,22 @@ public class DWGraph_DS implements directed_weighted_graph {
         MC++;
     }
 
+    /**
+     * This method returns a pointer (shallow copy) for the
+     * collection representing all the nodes in the graph.
+     * @return Collection<node_data>
+     */
     @Override
     public Collection<node_data> getV() {
         return Nodes.values();
     }
 
+    /**
+     * This method returns a pointer (shallow copy) for the
+     * collection representing all the edges getting out of
+     * the given node (all the edges starting (source) at the given node).
+     * @return Collection<edge_data>
+     */
     @Override
     public Collection<edge_data> getE(int node_id) {
         if (!Nodes.containsKey(node_id)) return null;
@@ -69,6 +100,12 @@ public class DWGraph_DS implements directed_weighted_graph {
         return edge_list;
     }
 
+    /**
+     * Deletes the node (with the given ID) from the graph -
+     * and removes all edges which starts or ends at this node.
+     * @return the data of the removed node (null if none).
+     * @param key - The key to be removed
+     */
     @Override
     public node_data removeNode(int key) {
         if (getNode(key) == null)
@@ -84,6 +121,12 @@ public class DWGraph_DS implements directed_weighted_graph {
         return Nodes.remove(key);
     }
 
+    /**
+     * Deletes the edge from the graph,
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return the data of the removed edge (null if none).
+     */
     @Override
     public edge_data removeEdge(int src, int dest) {
         if (!Edges.containsKey(src) || !Edges.containsKey(dest) || !Edges.get(src).containsKey(dest))

@@ -2,10 +2,15 @@ package gameClient;
 import api.*;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class Frame extends JFrame implements ActionListener {
@@ -42,12 +47,6 @@ public class Frame extends JFrame implements ActionListener {
         drawAgants(graphics);
         drawInfo(graphics);
         g.drawImage(image, 0, 0, this);
-//
-
-//        drawPokemons(g);
-//        drawGraph(g);
-//        drawAgants(g);
-//        drawInfo(g);
 
     }
     private void drawInfo(Graphics g) {
@@ -72,19 +71,26 @@ public class Frame extends JFrame implements ActionListener {
     private void drawPokemons(Graphics g) {
         java.util.List<My_Pokemon> fs = arena.getPokemons();
         if(fs!=null) {
-
             for (My_Pokemon f : fs) {
                 geo_location c = f.getLocation();
-                int r = 10;
-                g.setColor(Color.green);
-                if (f.getType() < 0) {
-                    g.setColor(Color.orange);
-                }
+                int r = 20;
                 if (c != null) {
-
                     geo_location fp = this._w2f.world2frame(c);
-                    g.fillOval((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
-                    //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+                    if (f.getType() < 0) {
+                        try {
+                            BufferedImage img = ImageIO.read(new File("./src/resources/Mewtwo.png"));
+                            g.drawImage(img, (int) fp.x() - r, (int) fp.y() - r, 30, 30, null);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else if (f.getType() > 0) {
+                        try {
+                            BufferedImage img = ImageIO.read(new File("./src/resources/Pikachu.png"));
+                            g.drawImage(img, (int) fp.x() - r, (int) fp.y() - r, 30, 30, null);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
             }
         }
@@ -99,9 +105,13 @@ public class Frame extends JFrame implements ActionListener {
             int r=8;
             i++;
             if(c!=null) {
-
                 geo_location fp = this._w2f.world2frame(c);
-                g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
+                try {
+                    BufferedImage img = ImageIO.read(new File("./src/resources/ash.png"));
+                    g.drawImage(img, (int) fp.x() - r, (int) fp.y() - r, 30, 30, null);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

@@ -3,7 +3,6 @@ package api;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,23 +14,34 @@ import java.util.*;
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph g;
     private HashMap<Integer, Boolean> vis;
-    private HashMap<Integer, node_data> daddy;
     private int[] low;
     private int count;
     private Stack<Integer> stack;
     private List<List<Integer>> Scc;
     private HashMap<Integer, Double> weights;
 
+    /**
+     * Init the graph on which this set of algorithms operates on.
+     * @param g - the graph
+     */
     @Override
     public void init(directed_weighted_graph g) {
         this.g = g;
     }
 
+    /**
+     * Return the underlying graph of which this class works.
+     * @return the graph
+     */
     @Override
     public directed_weighted_graph getGraph() {
         return g;
     }
 
+    /**
+     * Compute a deep copy of this weighted graph.
+     * @return - a copied graph
+     */
     @Override
     public directed_weighted_graph copy() {
         directed_weighted_graph gn = new DWGraph_DS();
@@ -48,7 +58,15 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return gn;
     }
 
-    private List<List<Integer>> Tarzan() {
+    /**
+     * Tarjan algorithm goes over a directed graph,
+     * and produces a partition of the graph's vertices into the graph's strongly connected components
+     * The main idea is to use DFS algorithm, with DFS, we will visit every node of the graph
+     * exactly once, declining to revisit any node that has already been visited.
+     * Thus, the collection of search trees is a spanning forest of the graph.
+     * The strongly connected components will be recovered as certain subtrees of this forest.
+     */
+    private void Tarzan() {
         int V = g.nodeSize();
         low = new int[V];
         vis = new HashMap<>();
@@ -62,7 +80,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         for (int i = 0; i < V; i++)
             if (!vis.get(i)) dfs(i);
 
-        return Scc;
     }
 
     private void dfs(int i) {
@@ -102,18 +119,32 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return Scc.size() <= 1; // if there are more than one component return false
     }
 
+    /**
+     * returns the length of the shortest path between src to dest
+     * Note: if no such path --> returns -1
+     * @param src - start node
+     * @param dest - end (target) node
+     */
     @Override
     public double shortestPathDist(int src, int dest) {
         if (shortestPath(src, dest) == null) return 0;
         return weights.get(dest);
     }
 
+    /**
+     * returns the the shortest path between src to dest - as an ordered List of nodes:
+     * src--> n1-->n2-->...dest
+     * Note if no such path --> returns null;
+     * @param src - start node
+     * @param dest - end (target) node
+     */
     public List<node_data> shortestPath(int src, int dest) {
         if (g.getNode(src) == null || g.getNode(dest) == null) // Checking if the keys exist
             return null;
 
+        // Dijkstra algorithm
         weights = new HashMap<>();
-        daddy = new HashMap<>();
+        HashMap<Integer, node_data> daddy = new HashMap<>();
         for (node_data n : g.getV()) {
             weights.put(n.getKey(), Double.MAX_VALUE);
             daddy.put(n.getKey(), null);
@@ -154,6 +185,12 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return path;
     }
 
+    /**
+     * Saves this weighted (directed) graph to the given
+     * file name - in JSON format
+     * @param file - the file name (may include a relative path).
+     * @return true - iff the file was successfully saved
+     */
     @Override
     public boolean save(String file) {
         JSONObject graph = new JSONObject();
@@ -187,6 +224,14 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return true;
     }
 
+    /**
+     * This method load a graph to this graph algorithm.
+     * if the file was successfully loaded - the underlying graph
+     * of this class will be changed (to the loaded one), in case the
+     * graph was not loaded the original graph should remain "as is".
+     * @param file - file name of JSON file
+     * @return true - iff the graph was successfully loaded.
+     */
     @Override
     public boolean load(String file) {
         try {
@@ -247,16 +292,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             e.printStackTrace();
         }
         return String.valueOf(graph);
-
-//
-//        StringBuilder st= new StringBuilder();
-//        for (node_data n:g.getV()) {
-//            st.append("key: ").append(n.getKey()).append("\n");
-//            for (edge_data e:g.getE(n.getKey())) {
-//                st.append("dest: ").append(e.getDest()).append(" w: ").append(e.getWeight()).append("\n");
-//            }
-//        }
-//        return st.toString();
     }
 }
 

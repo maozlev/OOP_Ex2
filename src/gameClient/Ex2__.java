@@ -52,8 +52,8 @@ public class Ex2__ implements Runnable {
                 e.printStackTrace();
             }
         }
-        String res = game.toString();
 
+        String res = game.toString();
         System.out.println(res);
         System.exit(0);
     }
@@ -79,7 +79,7 @@ public class Ex2__ implements Runnable {
             if (dest == -1) {
                 dest = nextNode(game, gg, src, ffs);
                 game.chooseNextEdge(ag.getID(), dest);
-                System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
+                // System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
             }
         }
     }
@@ -113,12 +113,10 @@ public class Ex2__ implements Runnable {
             }
         }
         edge_data e = My_Arena.updateEdge(mewtwo,g);
-        System.out.println(e.toString());
 
         if (path.size() <= 1) {
         path = _g.shortestPath(src,e.getSrc());
         path.add(g.getNode(e.getDest()));
-        System.out.println(path.toString());
         }
 
         return path.remove(1).getKey();
