@@ -42,6 +42,7 @@ public class My_Arena {
     public static void setGraph(directed_weighted_graph g) {_gg =g;}
     public static void setTime(long t) { time = t;}
 
+    public long getTime() { return time;}
     public List<CL_Agent> getAgents() {return _agents;}
     public List<My_Pokemon> getPokemons() {return _pokemons;}
 
@@ -52,48 +53,6 @@ public class My_Arena {
     }
 
 //
-
-    public static void moveAgents(game_service game, directed_weighted_graph g, int num_agents) {
-        String move = game.move();
-        List<CL_Agent> agents = getAgents(move, g);
-        setAgents(agents);
-        List<My_Pokemon> pokemons = json2Pokemons(game.getPokemons());
-        setPokemons(pokemons);
-        System.out.println(pokemons.toString());
-
-        CL_Agent ag;
-        for (int i = 0; i < num_agents; i++) {
-            ag = agents.get(i);
-            int src = ag.getSrcNode();
-            int dest = ag.getNextNode();
-            int id = ag.getID();
-            double v = ag.getValue();
-            if (dest == -1) {
-                dest = Ex2_good_news.nextNode(g, src, pokemons);
-                game.chooseNextEdge(id, dest);
-                System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
-            }
-        }
-    }
-
-    public static List<CL_Agent> getAgents(String s, directed_weighted_graph g) {
-        List<CL_Agent> ls = new ArrayList<>();
-        try {
-            JSONObject agent = new JSONObject(s);
-            JSONArray agents = agent.getJSONArray("Agents");
-            for (int i = 0; i < agents.length(); i++) {
-                JSONObject a = agents.getJSONObject(i).getJSONObject("Agent");
-                int id = a.getInt("id");
-                int src= a.getInt("src");
-                double x, y, z;
-                CL_Agent aa = new CL_Agent(g,src,id);
-                ls.add(aa);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return ls;
-    }
 
     public static ArrayList<My_Pokemon> json2Pokemons(String fs) {
         ArrayList<My_Pokemon> ans = new ArrayList<>();
@@ -155,18 +114,6 @@ public class My_Arena {
         }
         return ans;
     }
-
-    public static void set_real_edge(My_Pokemon fr, directed_weighted_graph g) {
-        for (node_data v : g.getV()) {
-            for (edge_data e : g.getE(v.getKey())) {
-                boolean f = isOnEdge(fr.getLocation(), e, fr.getType(), g);
-                if (f) {
-                    fr.set_edge(e);
-                }
-            }
-        }
-    }
-
 
     private static Range2D GraphRange(directed_weighted_graph g) {
         Iterator<node_data> itr = g.getV().iterator();
@@ -299,9 +246,5 @@ public class My_Arena {
             e.printStackTrace();
         }
         return list_of_agents;
-    }
-
-    public static void isClose () {
-
     }
 }

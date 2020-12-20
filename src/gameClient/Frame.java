@@ -14,14 +14,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class Frame extends JFrame {
-
     private int _ind;
     private My_Arena arena;
     private gameClient.util.Range2Range _w2f;
+    //private static Panel panel = new Panel();
+
+
     Frame(String a) {
         super(a);
         int _ind = 0;
     }
+
     public void update(My_Arena arena) {
         this.arena = arena;
         updateFrame();
@@ -45,7 +48,9 @@ public class Frame extends JFrame {
         drawGraph(graphics);
         drawPokemons(graphics);
         drawAgants(graphics);
+        drawClock(graphics);
         drawInfo(graphics);
+        //panel.update(g);
         g.drawImage(image, 0, 0, this);
 
     }
@@ -57,15 +62,23 @@ public class Frame extends JFrame {
         for(int i=0;i<str.size();i++) {
             g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
         }
+    }
+
+    private void drawClock(Graphics g){
+
+        g.setColor(Color.black);
+        g.setFont(new Font("David", Font.BOLD, 40) );
+        g.drawString(""+(arena.getTime()/1000),90,80);
 
     }
     private void drawGraph(Graphics g) {
         directed_weighted_graph gg = arena.getGraph();
         for (node_data n : gg.getV()) {
-            g.setColor(Color.black);
-            drawNode(n, 7, g);
+            g.setColor(new Color(255,128,0));
+            drawNode(n, 10, g);
             for (edge_data e : gg.getE(n.getKey())) {
-                g.setColor(Color.blue);
+                g.setColor(Color.black);
+
                 drawEdge(e, g);
             }
         }
@@ -129,7 +142,8 @@ public class Frame extends JFrame {
         geo_location d = gg.getNode(e.getDest()).getLocation();
         geo_location s0 = this._w2f.world2frame(s);
         geo_location d0 = this._w2f.world2frame(d);
-        g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
-        //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+        Graphics2D g1= (Graphics2D)g;
+        g1.setStroke(new BasicStroke(4));
+        g1.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
     }
 }
