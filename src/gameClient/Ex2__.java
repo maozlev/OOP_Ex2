@@ -24,7 +24,7 @@ public class Ex2__ implements Runnable {
 
     @Override
     public void run() {
-        int scenario_num = 0; // line to be deleted after figuring out how to use the main with jar file
+        int scenario_num = 1; // line to be deleted after figuring out how to use the main with jar file
         game_service game = Game_Server_Ex2.getServer(scenario_num);
         //	int id = 999;
         //	game.login(id);
