@@ -11,16 +11,20 @@ public class Ex2__ implements Runnable {
     private static Frame _win;
     private static My_Arena _ar;
     private static List<node_data> path;
+    public static int id;
+    public static int scenario_num;
 
     public static void main(String[] a) {
 
         Thread client = new Thread(new Ex2__());
+        // id = Integer.parseInt(a[0]);
+        // scenario_num = Integer.parseInt(a[1]);
         client.start();
     }
 
     @Override
     public void run() {
-        int scenario_num = 11;
+        int scenario_num = 0; // line to be deleted after figuring out how to use the main with jar file
         game_service game = Game_Server_Ex2.getServer(scenario_num);
         //	int id = 999;
         //	game.login(id);
@@ -32,7 +36,7 @@ public class Ex2__ implements Runnable {
         init(game);
 
         game.startGame();
-        _win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
+        _win.setTitle("Ex2 - OOP: "+game.toString());
         int ind=0;
         long dt = 250;
         long end = game.timeToEnd();
@@ -79,7 +83,7 @@ public class Ex2__ implements Runnable {
             if (dest == -1) {
                 dest = nextNode(game, gg, src, ffs);
                 game.chooseNextEdge(ag.getID(), dest);
-                // System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
+                System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
             }
         }
     }

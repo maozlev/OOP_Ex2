@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class Frame extends JFrame implements ActionListener {
+public class Frame extends JFrame {
 
     private int _ind;
     private My_Arena arena;
@@ -52,6 +52,8 @@ public class Frame extends JFrame implements ActionListener {
     private void drawInfo(Graphics g) {
         java.util.List<String> str = arena.get_info();
         String dt = "asif";
+        ImageIcon icon = new ImageIcon("./src/resources/pikachu-icon.png");
+        setIconImage(icon.getImage());
         for(int i=0;i<str.size();i++) {
             g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
         }
@@ -129,10 +131,5 @@ public class Frame extends JFrame implements ActionListener {
         geo_location d0 = this._w2f.world2frame(d);
         g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
         //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
     }
 }
