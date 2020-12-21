@@ -151,7 +151,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         }
         weights.put(src, 0.0);
         g.getNode(src).setWeight(0.0);
-        Queue<node_data> q = new LinkedList<>();
+        Queue<node_data> q = new PriorityQueue<>();
         q.add(g.getNode(src));
         while (!q.isEmpty()) {
             int tmp = q.poll().getKey();

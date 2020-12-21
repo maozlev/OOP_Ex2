@@ -1,13 +1,15 @@
 package gameClient;
-import api.*;
+
+import api.directed_weighted_graph;
+import api.edge_data;
+import api.geo_location;
+import api.node_data;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +70,7 @@ public class Frame extends JFrame {
 
         g.setColor(Color.black);
         g.setFont(new Font("David", Font.BOLD, 40) );
-        g.drawString(""+(arena.getTime()/1000),90,80);
+        g.drawString(""+(arena.getTime()/1000),470,80);
 
     }
     private void drawGraph(Graphics g) {
@@ -78,7 +80,6 @@ public class Frame extends JFrame {
             drawNode(n, 10, g);
             for (edge_data e : gg.getE(n.getKey())) {
                 g.setColor(Color.black);
-
                 drawEdge(e, g);
             }
         }

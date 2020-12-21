@@ -8,26 +8,22 @@ import java.awt.event.ActionListener;
 
 
 public class Panel extends JFrame implements ActionListener {
-    private JTextField ID_Text;
-    private JLabel ID_Label;
-    private JLabel GameNumber_Label;
-
+    private JLabel idLabel;
+    private JTextField idText;
+    private JLabel scenarioNum_Label;
+    private JTextField scenario_number;
     private JPanel panel;
-    private JComboBox GameOpt;
     private JButton LoginButton;
-    private int ID;
-    private int GameNumber;
-    private int h = 350;
-    private int w = 550;
-    private ImageIcon pokemon;
-    private Image image;
-    private Graphics gr;
+    private int id;
+    private int scenarioNumber;
+    private int h = 320;
+    private int w = 500;
     private JLabel back;
 
     public Panel() {
         setSize(w, h);
         init();
-        panel.setBackground(new Color(0,255,0));
+        panel.setBackground(Color.darkGray);
         this.revalidate();
        // panel.revalidate();
     }
@@ -45,7 +41,7 @@ public class Panel extends JFrame implements ActionListener {
         panel.setLayout(null);
         back = new JLabel();
         setID();
-        setGameNumber();
+        setScenarioNumber();
         setButtons();
         setPanel();
         this.add(panel);
@@ -55,42 +51,43 @@ public class Panel extends JFrame implements ActionListener {
         w = getWidth();
         h = getHeight();
         this.setSize(w, h);
-        image = this.createImage(w, h);
-        gr = image.getGraphics();
-        paintComponents(gr);
+        Image image = this.createImage(w, h);
+        Graphics graph = image.getGraphics();
+        paintComponents(graph);
         g.drawImage(image, 0, 0, this);
         back.setBounds(0, 0, getWidth(), getHeight());
     }
 
     /**
-     * set all the labels and the text place for the ID
+     * set ID
      */
     private void setID() {
-        ID_Label = new JLabel("ID number");
-        Font f1 = new Font("SansSerif", Font.BOLD, 15);
-        Font f2 = new Font("SansSerif", Font.PLAIN, 12);
-        ID_Label.setFont(f1);
-        ID_Label.setBounds(175, 40, 200, 20);
-        ID_Text = new JTextField(20);
-        ID_Text.setFont(f2);
-        ID_Text.setBounds(175, 70, 200, 28);
+        idLabel = new JLabel("ID:");
+        Font f1 = new Font("David", Font.BOLD, 16);
+        Font f2 = new Font("David", Font.PLAIN, 12);
+        idLabel.setForeground(Color.white);
+        idLabel.setFont(f1);
+        idLabel.setBounds(150, 40, 200, 20);
+        idText = new JTextField(20);
+        idText.setFont(f2);
+        idText.setBounds(150, 70, 200, 20);
+        idText.setBackground(Color.orange);
     }
 
     /**
-     * set all the labels and the text place for the Game number
+     * set Game number
      */
-    private void setGameNumber() {
-        Font f1 = new Font("SansSerif", Font.BOLD, 15);
-        Font f2 = new Font("SansSerif", Font.PLAIN, 12);
-        GameNumber_Label = new JLabel("Game number");
-        GameNumber_Label.setFont(f1);
-        GameNumber_Label.setBounds(175, 120, 200, 20);
-        String[] s={"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-                "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
-        GameOpt=new JComboBox(s);
-        GameOpt.setBackground(Color.white);
-        GameOpt.setFont(f2);
-        GameOpt.setBounds(175, 150, 200, 28);
+    private void setScenarioNumber() {
+        Font f1 = new Font("David", Font.BOLD, 16);
+        Font f2 = new Font("David", Font.PLAIN, 12);
+        scenarioNum_Label = new JLabel("Scenario:");
+        scenarioNum_Label.setForeground(Color.white);
+        scenarioNum_Label.setFont(f1);
+        scenarioNum_Label.setBounds(150, 120, 200, 20);
+        scenario_number = new JTextField(20);
+        scenario_number.setFont(f2);
+        scenario_number.setBounds(150, 150, 200, 28);
+        scenario_number.setBackground(Color.orange);
     }
 
     /**
@@ -98,12 +95,12 @@ public class Panel extends JFrame implements ActionListener {
      */
     private void setButtons() {
         //login button
-        LoginButton = new JButton("login");
+        LoginButton = new JButton("Let's start");
         LoginButton.setVisible(true);
-        Font f3 = new Font("Dialog", Font.BOLD, 15);
-        LoginButton.setBackground(new Color(217, 89, 64));
+        Font f3 = new Font("David", Font.BOLD, 15);
+        LoginButton.setBackground(Color.yellow);
         LoginButton.setFont(f3);
-        LoginButton.setBounds(225, 250, 100, 25);
+        LoginButton.setBounds(200, 210, 100, 25);
         LoginButton.addActionListener(this);
     }
 
@@ -111,21 +108,21 @@ public class Panel extends JFrame implements ActionListener {
      * add all the labels and the buttons to the panel
      */
     private void setPanel() {
-        panel.add(GameNumber_Label);
-        panel.add(ID_Label);
-        panel.add(ID_Text);
+        panel.add(scenarioNum_Label);
+        panel.add(idLabel);
+        panel.add(idText);
         panel.add(LoginButton);
-        panel.add(GameOpt);
+        panel.add(scenario_number);
         panel.add(back);
         panel.setSize(getWidth(), getHeight());
     }
 
-    /**
-     * paint the background of the screen
-     */
+//    /**
+//     * paint the background of the screen
+//     */
     public void paintComponents(Graphics g) {
         super.paintComponents(g);
-        pokemon = new ImageIcon("data//images//ash.jpg");
+        ImageIcon pokemon = new ImageIcon("./src/resources/pokemon.jpeg");
         Image pokemon1 = pokemon.getImage();
         Image pokemon2 = pokemon1.getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
         pokemon = new ImageIcon(pokemon2);
@@ -133,22 +130,22 @@ public class Panel extends JFrame implements ActionListener {
     }
 
     /**
-     * check if the login button is clicked, if so, check if the
-     * id and the game number is valid and start the game.
+     * check if the login button is clicked, and then, check if the
+     * id and the scenario is ok and start the game.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         if ((e.getSource())==LoginButton) {
             try {
-                ID = Integer.parseInt(ID_Text.getText());
-                GameNumber = GameOpt.getSelectedIndex();
-                JOptionPane.showMessageDialog(this, "Let's start the game");
+                id = Integer.parseInt(idText.getText());
+                scenarioNumber = Integer.parseInt(scenario_number.getText());
+                // JOptionPane.showMessageDialog(this, "Click to start!");
                 run();
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Invalid ID\nPlease enter again");
-                System.out.println("ERROR, enter again");
+                JOptionPane.showMessageDialog(this, "Invalid input, please enter again");
+                System.out.println("Error, please enter again");
             }
         }
     }
@@ -157,11 +154,11 @@ public class Panel extends JFrame implements ActionListener {
      * create a new Ex2 (new game) and run it with the given id and game number
      */
     public void run() {
-        Ex2 ex2=new Ex2();
-        ex2.setID(ID);
-        ex2.setGameNumber(GameNumber);
+        Ex2 login=new Ex2();
+        login.setID(id);
+        login.setScenario_num(scenarioNumber);
         this.dispose();
-        Thread Game = new Thread(ex2);
+        Thread Game = new Thread(login);
         Game.start();
     }
 }

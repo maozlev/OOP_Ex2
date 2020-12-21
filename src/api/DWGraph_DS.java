@@ -65,6 +65,7 @@ public class DWGraph_DS implements directed_weighted_graph {
         if (src == dest) return;
         edge_data edge = new EdgeData(src, dest, w);
         if (Edges.get(src).containsKey(dest)) {
+            if (Edges.get(src).get(dest).getWeight() != w) MC++;
             Edges.get(src).replace(dest, edge);
             return;
         }
@@ -150,6 +151,22 @@ public class DWGraph_DS implements directed_weighted_graph {
     @Override
     public int getMC() {
         return MC;
+    }
+
+    public boolean equals(Object g){
+        if (this == g) return true;
+        if(!(g instanceof DWGraph_DS)) return false; // g need to be DWGraph_DS object
+        DWGraph_DS g1 = (DWGraph_DS)g;
+        boolean flag=true;
+        if(g1.nodeSize()!= this.nodeSize()) return false; // first of all check sizes
+        if(g1.edgeSize()!= this.edgeSize()) return false;
+        for (node_data n : g1.getV()) { //check if all the nodes are equal
+            if (n!=getNode(n.getKey())) flag=false;
+            for (edge_data e: g1.getE(n.getKey())) {
+                if(e.getWeight()!= getEdge(e.getSrc(),e.getDest()).getWeight()) flag=false;
+            }
+        }
+        return flag;
     }
 
     @Override
