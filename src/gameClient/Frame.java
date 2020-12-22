@@ -16,22 +16,26 @@ import java.io.IOException;
 import java.util.List;
 
 public class Frame extends JFrame {
-    private int _ind;
     private My_Arena arena;
     private gameClient.util.Range2Range _w2f;
-    //private static Panel panel = new Panel();
 
 
     Frame(String a) {
         super(a);
-        int _ind = 0;
     }
 
+    /**
+     * Updates arena data
+     * @param arena - update
+     */
     public void update(My_Arena arena) {
         this.arena = arena;
         updateFrame();
     }
 
+    /**
+     * Update frame size
+     */
     private void updateFrame() {
         Range rx = new Range(20,this.getWidth()-20);
         Range ry = new Range(this.getHeight()-10,150);
@@ -39,9 +43,16 @@ public class Frame extends JFrame {
         directed_weighted_graph g = arena.getGraph();
         _w2f = My_Arena.w2f(g,frame);
     }
+
+    /**
+     * Paint all parameters in the fame
+     * @param g - responsible of the graphics
+     */
     public void paint(Graphics g) {
         int w = this.getWidth();
         int h = this.getHeight();
+        setSize(w,h);
+        updateFrame();
         Image image;
         Graphics graphics;
         image = createImage(w, h);
@@ -50,29 +61,34 @@ public class Frame extends JFrame {
         drawGraph(graphics);
         drawPokemons(graphics);
         drawAgants(graphics);
-        drawClock(graphics);
         drawInfo(graphics);
-        //panel.update(g);
         g.drawImage(image, 0, 0, this);
-
     }
+
+    /**
+     * Draws all infor in the game, such as icon and clock
+     * @param g - graphics
+     */
     private void drawInfo(Graphics g) {
-        java.util.List<String> str = arena.get_info();
-        String dt = "asif";
         ImageIcon icon = new ImageIcon("./src/resources/pikachu-icon.png");
         setIconImage(icon.getImage());
-        for(int i=0;i<str.size();i++) {
-            g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
-        }
+        drawClock(g);
     }
 
+    /**
+     * Draws a clock that counts down the time left in the game
+     * @param g - graphics
+     */
     private void drawClock(Graphics g){
-
         g.setColor(Color.black);
         g.setFont(new Font("David", Font.BOLD, 40) );
         g.drawString(""+(arena.getTime()/1000),470,80);
-
     }
+
+    /**
+     * Draws the graph - Nodes and edges
+     * @param g - Graphics
+     */
     private void drawGraph(Graphics g) {
         directed_weighted_graph gg = arena.getGraph();
         for (node_data n : gg.getV()) {
@@ -84,6 +100,11 @@ public class Frame extends JFrame {
             }
         }
     }
+
+    /**
+     * Draw the pokemons on the graph
+     * @param g - Graphics
+     */
     private void drawPokemons(Graphics g) {
         java.util.List<My_Pokemon> fs = arena.getPokemons();
         if(fs!=null) {
@@ -96,21 +117,26 @@ public class Frame extends JFrame {
                         try {
                             BufferedImage img = ImageIO.read(new File("./src/resources/Mewtwo.png"));
                             g.drawImage(img, (int) fp.x() - r, (int) fp.y() - r, 30, 30, null);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     } else if (f.getType() > 0) {
                         try {
                             BufferedImage img = ImageIO.read(new File("./src/resources/Pikachu.png"));
                             g.drawImage(img, (int) fp.x() - r, (int) fp.y() - r, 30, 30, null);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
         }
     }
+
+    /**
+     * Draw the agents on the graph
+     * @param g - Graphics
+     */
     private void drawAgants(Graphics g) {
         List<CL_Agent> rs = arena.getAgents();
         //	Iterator<OOP_Point3D> itr = rs.iterator();
@@ -131,12 +157,25 @@ public class Frame extends JFrame {
             }
         }
     }
+
+    /**
+     * Draws the node on the graph
+     * @param n - the node we want to draw
+     * @param r - it's size
+     * @param g - Graphics
+     */
     private void drawNode(node_data n, int r, Graphics g) {
         geo_location pos = n.getLocation();
         geo_location fp = this._w2f.world2frame(pos);
         g.fillOval((int)fp.x()-r, (int)fp.y()-r, 2*r, 2*r);
         g.drawString(""+n.getKey(), (int)fp.x(), (int)fp.y()-4*r);
     }
+
+    /**
+     * Draws the edges on the graph
+     * @param e - the edge we want to draw
+     * @param g - Graphics
+     */
     private void drawEdge(edge_data e, Graphics g) {
         directed_weighted_graph gg = arena.getGraph();
         geo_location s = gg.getNode(e.getSrc()).getLocation();

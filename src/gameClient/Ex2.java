@@ -2,17 +2,25 @@ package gameClient;
 
 import Server.Game_Server_Ex2;
 import api.*;
-import com.sun.jdi.request.ExceptionRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
 import java.util.List;
 
+/**
+  This class represents the main functionality of the game-server, allowing a User the following:
+  1. Run a game with ID of the player and Scenario number;
+  2. MoveAgents();
+  3. NextNode();
+  4. chooseNextEdge(int agentID, int destNodeID); // main algorithm
+  5. CatchEm() - Wake up near to a pokemon
+
+  @author Asif Rot && Maoz Lev
+ */
 public class Ex2 implements Runnable {
     private static Frame _win;
     private static My_Arena _ar;
-    private static Panel panel;
     private static List<node_data> path;
     private static List<CL_Agent> agents;
     private static HashMap<My_Pokemon, Boolean> pokadoor;
@@ -49,6 +57,9 @@ public class Ex2 implements Runnable {
         }
     }
 
+    /**
+     * Function to run the game
+     */
     @Override
     public void run() {
         game_service game = null;
@@ -65,7 +76,6 @@ public class Ex2 implements Runnable {
         }
         String g = game.getGraph();
         directed_weighted_graph gg = My_Arena.load_graph(g);
-//        String pks = game.getPokemons();
 
         init(game);
 
@@ -77,7 +87,6 @@ public class Ex2 implements Runnable {
 
         while(game.isRunning()) {
             moveAgents(game, gg);
-            // dt = isCloseToPokemon()? 20 : 120;
             try {
                 My_Arena.setTime(game.timeToEnd());
                 if (dt == 250) {
@@ -97,17 +106,18 @@ public class Ex2 implements Runnable {
         System.out.println(res);
         System.exit(0);
     }
+
     /**
-     * Moves each of the agents along the edge,
-     * in case the agent is on a node the next destination (next edge) is chosen (randomly).
-     * @param game
-     * @param gg
-     * @param
+     * Moves each of the agents along the edge to catch pokemons,
+     * each agent go to the nearest pokemon who is next to him using the shortest path
+     * algorithm on the graph.
+     * @param game - game service
+     * @param gg - the graph we run on
      */
     private static void moveAgents(game_service game, directed_weighted_graph gg) {
         String lg = game.move();
-        agents = Arena.getAgents(lg, gg);
-        List <CL_Agent> agents1 = new ArrayList<>(agents);
+        agents = My_Arena.getAgents(lg, gg);
+        List <CL_Agent> agents1 = new ArrayList<>(My_Arena.load_agents(game.getAgents(), gg));
         My_Arena.setAgents(agents);
         String fs =  game.getPokemons();
         List<My_Pokemon> ffs = My_Arena.json2Pokemons(fs);
@@ -118,13 +128,13 @@ public class Ex2 implements Runnable {
 
         for (CL_Agent ag : agents) {
             int id = ag.getID();
-            int dest = ag.getNextNode();
+            int dest;
             int src = ag.getSrcNode();
             double v = ag.getValue();
-            if (dest == -1) {
+            if (!ag.isMoving()) {
                 dest = nextNode(game, gg, src, ffs);
                 for (My_Pokemon p: ffs) {
-                    runBarry(p, gg, agents1); // changes dt if pokemon is on edge
+                    CatchEm(p, gg, agents1); // changes dt if pokemon is on edge
                 }
                 game.chooseNextEdge(ag.getID(), dest);
                 System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
@@ -133,10 +143,12 @@ public class Ex2 implements Runnable {
     }
 
     /**
-     * walk implementation using the shortest path function from graph algo.
-     * @param g
-     * @param src
-     * @return
+     * Implementation of getting the next node, using the shortest path function from graph algo.
+     * @param game - game service
+     * @param g - graph we run on
+     * @param src - source node
+     * @param pokemons - List of pokemons
+     * @return the next node the agent should go to
      */
     private static int nextNode(game_service game, directed_weighted_graph g, int src, List<My_Pokemon> pokemons) {
         if (pokemons.isEmpty()) {
@@ -190,14 +202,12 @@ public class Ex2 implements Runnable {
     }
 
     /**
-     * initialize the game for the first time:
-     * add pokemons to the graph.
-     * add the agents close as much as we can next to pokemon.
+     * Initialize the game for the first time:
+     * Add pokemons to the graph.
+     * Add the agents close as much as we can near to the pokemon.
      * Create the frame
-     *
      * @param game - the game service
      */
-
     private void init(game_service game) {
         String g = game.getGraph();
         String fs = game.getPokemons();
@@ -235,31 +245,36 @@ public class Ex2 implements Runnable {
         catch (JSONException e) {e.printStackTrace();}
     }
 
+    /**
+     * Setting ID of the player
+     * @param id - Player's ID
+     */
     public void setID(int id) {
         Ex2.id = id;
     }
 
+
+    /**
+     * Setting scenario of the game
+     * @param scenario_num - of the game [0, 23]
+     */
     public void setScenario_num(int scenario_num) {
         Ex2.scenario_num=scenario_num;
     }
 
-    private static void runBarry (My_Pokemon p, directed_weighted_graph g, List<CL_Agent> agents) {
+    /**
+     * Check if the agent close to the pokemon. if he is close enough,
+     * the time sleep will be very small to let the agent catch the pokemon.
+     * @param p - the pokemon on the edge
+     * @param g - the graph we run on
+     * @param agents - List of agents in the game
+     */
+    private static void CatchEm(My_Pokemon p, directed_weighted_graph g, List<CL_Agent> agents) {
         for (CL_Agent agent : agents) {
             if (agent.get_curr_edge() == p.get_edge())
-                if (p.getLocation().distance(agent.getLocation()) < 0.00001) {
-                    dt = (long) (p.get_edge().getWeight() * 0.00001);
+                if (p.getLocation().distance(agent.getLocation()) < CL_Agent.EPS) {
+                    dt = (long) (p.get_edge().getWeight() * CL_Agent.EPS);
                 }
         }
-    }
-
-    private boolean isCloseToPokemon() {
-        for(CL_Agent ag : _ar.getAgents()){
-            for(My_Pokemon p : _ar.getPokemons()) {
-                if (ag.get_curr_edge() == p.get_edge() &&
-                        ag.getLocation().distance(p.getLocation()) < 0.001 * ag.getSpeed())
-                    return true;
-            }
-        }
-        return false;
     }
 }
