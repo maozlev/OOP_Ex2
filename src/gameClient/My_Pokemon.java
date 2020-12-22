@@ -11,14 +11,6 @@ public class My_Pokemon implements Comparable<My_Pokemon> {
     private double min_dist;
     private int min_ro;
 
-    public My_Pokemon(geo_location p, int t, double v) {
-        _type = t;
-        _value = v;
-        _pos = p;
-        min_dist = -1;
-        min_ro = -1;
-    }
-
     public My_Pokemon(geo_location p, int t, double v, edge_data e) {
         _type = t;
         _value = v;
@@ -43,22 +35,6 @@ public class My_Pokemon implements Comparable<My_Pokemon> {
     public int getType() {return _type;}
 
     public double getValue() {return _value;}
-
-    public double getMin_dist() {
-        return min_dist;
-    }
-
-    public void setMin_dist(double mid_dist) {
-        this.min_dist = mid_dist;
-    }
-
-    public int getMin_ro() {
-        return min_ro;
-    }
-
-    public void setMin_ro(int min_ro) {
-        this.min_ro = min_ro;
-    }
 
     public String toString() {return "F:{v="+_value+", t="+_type+", pos="+_pos+ "}";}
 

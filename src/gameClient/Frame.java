@@ -58,10 +58,10 @@ public class Frame extends JFrame {
         image = createImage(w, h);
         graphics = image.getGraphics();
         graphics.clearRect(0, 0, w, h);
+        drawInfo(graphics);
         drawGraph(graphics);
         drawPokemons(graphics);
         drawAgants(graphics);
-        drawInfo(graphics);
         g.drawImage(image, 0, 0, this);
     }
 
@@ -72,7 +72,11 @@ public class Frame extends JFrame {
     private void drawInfo(Graphics g) {
         ImageIcon icon = new ImageIcon("./src/resources/pikachu-icon.png");
         setIconImage(icon.getImage());
+        Graphics2D g2d = (Graphics2D) g;
+        Image im = new ImageIcon("./src/resources/pikapika.png").getImage();
+        g2d.drawImage(im,0,0,this.getWidth(),this.getHeight(),null);
         drawClock(g);
+        drawLevel(g);
     }
 
     /**
@@ -82,7 +86,17 @@ public class Frame extends JFrame {
     private void drawClock(Graphics g){
         g.setColor(Color.black);
         g.setFont(new Font("David", Font.BOLD, 40) );
-        g.drawString(""+(arena.getTime()/1000),470,80);
+        g.drawString("Time: "+(arena.getTime()/1000),470,80);
+    }
+
+    /**
+     * Draw the level of the game from scenario_num
+     * @param g - graphics
+     */
+    private void drawLevel(Graphics g){
+        g.setColor(Color.black);
+        g.setFont(new Font("David", Font.BOLD, 40) );
+        g.drawString("Level: "+(Ex2.scenario_num),250,80);
     }
 
     /**

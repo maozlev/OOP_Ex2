@@ -17,7 +17,7 @@ public class CL_Agent {
 	private edge_data _curr_edge;
 	private node_data _curr_node;
 	private directed_weighted_graph _gg;
-	private My_Pokemon _curr_fruit;
+	private My_Pokemon pokemonTarget;
 	private long _sg_dt;
 	private double _value;
 
@@ -28,16 +28,6 @@ public class CL_Agent {
 		this._curr_node = _gg.getNode(start_node);
 		_pos = _curr_node.getLocation();
 		_id = -1;
-		setSpeed(0);
-	}
-
-	// Constructor
-	public CL_Agent(directed_weighted_graph g, int start_node, int id) {
-		_gg = g;
-		setMoney(0);
-		this._curr_node = _gg.getNode(start_node);
-		_pos = _curr_node.getLocation();
-		_id = id;
 		setSpeed(0);
 	}
 
@@ -78,7 +68,7 @@ public class CL_Agent {
 
 	public String toJSON() {
 		int d = this.getNextNode();
-		String ans = "{\"Agent\":{"
+		return "{\"Agent\":{"
 				+ "\"id\":" + this._id + ","
 				+ "\"value\":" + this._value + ","
 				+ "\"src\":" + this._curr_node.getKey() + ","
@@ -87,29 +77,36 @@ public class CL_Agent {
 				+ "\"pos\":\"" + _pos.toString() + "\""
 				+ "}"
 				+ "}";
-		return ans;
 	}
 
+	/**
+	 * setting the value of agent
+	 * @param v - value
+	 */
 	private void setMoney(double v) {
 		_value = v;
 	}
 
-	public boolean setNextNode(int dest) {
-		boolean ans = false;
+	/**
+	 * Setting the next node for the agent
+	 * @param dest - target node
+	 */
+	public void setNextNode(int dest) {
 		int src = this._curr_node.getKey();
 		this._curr_edge = _gg.getEdge(src, dest);
-		if (_curr_edge != null) {
-			ans = true;
-		} else {
-			_curr_edge = null;
-		}
-		return ans;
 	}
 
+	/**
+	 * Setting the current node for the agent
+	 * @param src - source node
+	 */
 	public void setCurrNode(int src) {
 		this._curr_node = _gg.getNode(src);
 	}
 
+	/**
+	 * @return true if agent is moving
+	 */
 	public boolean isMoving() {
 		return this._curr_edge != null;
 	}
@@ -122,22 +119,22 @@ public class CL_Agent {
 	 * @return the id of the agent
 	 */
 	public int getID() {
-		// TODO Auto-generated method stub
 		return this._id;
 	}
 
 	public geo_location getLocation() {
-		// TODO Auto-generated method stub
 		return _pos;
 	}
 
 
 	public double getValue() {
-		// TODO Auto-generated method stub
 		return this._value;
 	}
 
-
+	/**
+	 * getting the next node for the agent
+	 * @return target node
+	 */
 	public int getNextNode() {
 		int ans = -2;
 		if (this._curr_edge == null) {
@@ -156,41 +153,15 @@ public class CL_Agent {
 		this._speed = v;
 	}
 
-	public My_Pokemon get_curr_fruit() {
-		return _curr_fruit;
+	public My_Pokemon getPokemonTarget() {
+		return pokemonTarget;
 	}
 
-	public void set_curr_fruit(My_Pokemon curr_fruit) {
-		this._curr_fruit = curr_fruit;
-	}
-
-	public void set_SDT(long ddtt) {
-		long ddt = ddtt;
-		if (this._curr_edge != null) {
-			double w = get_curr_edge().getWeight();
-			geo_location dest = _gg.getNode(get_curr_edge().getDest()).getLocation();
-			geo_location src = _gg.getNode(get_curr_edge().getSrc()).getLocation();
-			double de = src.distance(dest);
-			double dist = _pos.distance(dest);
-			if (this.get_curr_fruit().get_edge() == this.get_curr_edge()) {
-				dist = _curr_fruit.getLocation().distance(this._pos);
-			}
-			double norm = dist / de;
-			double dt = w * norm / this.getSpeed();
-			ddt = (long) (1000.0 * dt);
-		}
-		this.set_sg_dt(ddt);
+	public void setPokemonTarget(My_Pokemon pokemonTarget) {
+		this.pokemonTarget = pokemonTarget;
 	}
 
 	public edge_data get_curr_edge() {
 		return this._curr_edge;
-	}
-
-	public long get_sg_dt() {
-		return _sg_dt;
-	}
-
-	public void set_sg_dt(long _sg_dt) {
-		this._sg_dt = _sg_dt;
 	}
 }

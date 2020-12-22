@@ -24,14 +24,7 @@ public class My_Arena {
     private static Point3D MAX = new Point3D(0, 100, 0);
 
     public My_Arena() {
-        ;
         _info = new ArrayList<>();
-    }
-
-    private My_Arena(directed_weighted_graph g, List<CL_Agent> r, List<My_Pokemon> p) {
-        _gg = g;
-        setAgents(r);
-        setPokemons(p);
     }
 
     public static void setPokemons(List<My_Pokemon> f) {
@@ -70,6 +63,12 @@ public class My_Arena {
         return _info;
     }
 
+    /**
+     * Getting list of the agents from json file
+     * @param aa - getting the json
+     * @param gg - the graph
+     * @return list of agents
+     */
     public static List<CL_Agent> getAgents(String aa, directed_weighted_graph gg) {
         ArrayList<CL_Agent> ans = new ArrayList<CL_Agent>();
         try {
@@ -86,6 +85,11 @@ public class My_Arena {
         return ans;
     }
 
+    /**
+     * Getting list of the pokemons from json file
+     * @param fs - getting the json
+     * @return list of pokemons
+     */
     public static ArrayList<My_Pokemon> json2Pokemons(String fs) {
         ArrayList<My_Pokemon> ans = new ArrayList<>();
         try {
@@ -128,6 +132,14 @@ public class My_Arena {
         return isOnEdge(p, src, dest);
     }
 
+    /**
+     * Checking if the the pokemon is on the edge we are on
+     * @param p - location of pokemon
+     * @param e - edge we are looking at
+     * @param type of pokemon ( -1 or 1)
+     * @param g - The graph
+     * @return if the pokemon is on the edge or not
+     */
     public static boolean isOnEdge(geo_location p, edge_data e, int type, directed_weighted_graph g) {
         int src = g.getNode(e.getSrc()).getKey();
         int dest = g.getNode(e.getDest()).getKey();
@@ -140,6 +152,12 @@ public class My_Arena {
         return isOnEdge(p, src, dest, g);
     }
 
+    /**
+     * Find the edge of the pokemon
+     * @param fr - the pokemon that we get
+     * @param g - the graph
+     * @return the edge that we have looking for all over the place
+     */
     public static edge_data updateEdge(My_Pokemon fr, directed_weighted_graph g) {
         edge_data ans = null;
         for (node_data v : g.getV()) {
@@ -191,6 +209,11 @@ public class My_Arena {
         return new Range2Range(world, frame);
     }
 
+    /**
+     * Load graph from json file
+     * @param s - json file
+     * @return graph from json
+     */
     public static directed_weighted_graph load_graph(String s) {
         directed_weighted_graph g = new DWGraph_DS();
         try {
@@ -221,24 +244,5 @@ public class My_Arena {
             e.printStackTrace();
         }
         return g;
-    }
-
-    public static List<CL_Agent> load_agents (String s,directed_weighted_graph g) {
-        ArrayList<CL_Agent> list_of_agents = new ArrayList<>();
-        try {
-            JSONObject agent = new JSONObject(s);
-            JSONArray agents = agent.getJSONArray("Agents");
-            for (int i = 0; i < agents.length(); i++) {
-                JSONObject a = agents.getJSONObject(i).getJSONObject("Agent");
-                int id = a.getInt("id");
-                int src= a.getInt("src");
-                double x, y, z;
-                CL_Agent aa= new CL_Agent(g, src,id);
-                list_of_agents.add(aa);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return list_of_agents;
     }
 }

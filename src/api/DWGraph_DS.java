@@ -160,10 +160,10 @@ public class DWGraph_DS implements directed_weighted_graph {
         boolean flag=true;
         if(g1.nodeSize()!= this.nodeSize()) return false; // first of all check sizes
         if(g1.edgeSize()!= this.edgeSize()) return false;
-        for (node_data n : g1.getV()) { //check if all the nodes are equal
+        for (node_data n : g1.getV()) { // check if all the nodes are equal
             if (n!=getNode(n.getKey())) flag=false;
             for (edge_data e: g1.getE(n.getKey())) {
-                if(e.getWeight()!= getEdge(e.getSrc(),e.getDest()).getWeight()) flag=false;
+                if(e.getWeight()!= getEdge(e.getSrc(),e.getDest()).getWeight()) flag=false; // check if all the weights are equal
             }
         }
         return flag;
