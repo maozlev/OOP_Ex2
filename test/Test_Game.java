@@ -11,7 +11,6 @@ import api.*;
 
 public class Test_Game {
     private static Random _rnd = null;
-    public static int _count = 0;
     public static directed_weighted_graph g;
     public static dw_graph_algorithms _g;
 
