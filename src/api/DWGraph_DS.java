@@ -35,6 +35,7 @@ public class DWGraph_DS implements directed_weighted_graph {
      */
     @Override
     public edge_data getEdge(int src, int dest) {
+        if (!Edges.get(src).containsKey(dest) || src == dest || !Edges.containsKey(src) || !Edges.containsKey(dest)) return null;
         return Edges.get(src).get(dest);
     }
 
@@ -109,14 +110,14 @@ public class DWGraph_DS implements directed_weighted_graph {
      */
     @Override
     public node_data removeNode(int key) {
-        if (getNode(key) == null)
-            return null;
+        if (getNode(key) == null) return null;
+
         for (int n : Edges.get(key).keySet()) {
             Edges.get(n).remove(key);
             numofedges--;
             MC++;
-        }
 
+        }
         Edges.remove(key);
         MC++;
         return Nodes.remove(key);
@@ -157,16 +158,15 @@ public class DWGraph_DS implements directed_weighted_graph {
         if (this == g) return true;
         if(!(g instanceof DWGraph_DS)) return false; // g need to be DWGraph_DS object
         DWGraph_DS g1 = (DWGraph_DS)g;
-        boolean flag=true;
         if(g1.nodeSize()!= this.nodeSize()) return false; // first of all check sizes
         if(g1.edgeSize()!= this.edgeSize()) return false;
         for (node_data n : g1.getV()) { // check if all the nodes are equal
-            if (n!=getNode(n.getKey())) flag=false;
+            if (n.getKey()!=this.getNode(n.getKey()).getKey()) return false;
             for (edge_data e: g1.getE(n.getKey())) {
-                if(e.getWeight()!= getEdge(e.getSrc(),e.getDest()).getWeight()) flag=false; // check if all the weights are equal
+                if(e.getWeight()!= this.getEdge(e.getSrc(),e.getDest()).getWeight()) return false; // check if all the weights are equal
             }
         }
-        return flag;
+        return true;
     }
 
     @Override
