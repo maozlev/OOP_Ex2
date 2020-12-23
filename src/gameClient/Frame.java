@@ -77,6 +77,7 @@ public class Frame extends JFrame {
         g2d.drawImage(im,0,0,this.getWidth(),this.getHeight(),null);
         drawClock(g);
         drawLevel(g);
+        drawGrade(g);
     }
 
     /**
@@ -97,6 +98,16 @@ public class Frame extends JFrame {
         g.setColor(Color.black);
         g.setFont(new Font("David", Font.BOLD, 40) );
         g.drawString("Level: "+(Ex2.scenario_num),250,80);
+    }
+
+    /**
+     * Draw the level of the game from scenario_num
+     * @param g - graphics
+     */
+    private void drawGrade(Graphics g){
+        g.setColor(Color.black);
+        g.setFont(new Font("David", Font.BOLD, 40) );
+        g.drawString("Grade: "+(Ex2.grade),680,80);
     }
 
     /**

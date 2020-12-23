@@ -26,6 +26,7 @@ public class Ex2 implements Runnable {
     public static int id;
     public static long dt;
     public static int scenario_num;
+    public static double grade = 0;
 
     public static void main(String[] a) {
 
@@ -118,6 +119,7 @@ public class Ex2 implements Runnable {
         String fs = game.getPokemons();
         List<My_Pokemon> ffs = My_Arena.json2Pokemons(fs);
         My_Arena.setPokemons(ffs);
+        grade = 0;
         dt = 300;
         pokadoor = new HashMap<>();
         for (My_Pokemon p : ffs)
@@ -132,7 +134,9 @@ public class Ex2 implements Runnable {
                 game.chooseNextEdge(ag.getID(), dest);
                 System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);
             }
+            grade+= ag.getValue();
         }
+
     }
 
     /**
