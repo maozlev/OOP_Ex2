@@ -119,6 +119,6 @@ B. Shortest_path: This function use Dijkstra Algorithm to find the shortest path
 
 In this part, we implement gameClient and we will explain more about it in the Wiki:
 
-[Click here](https://github.com/maozlev/OOP_Ex2/wiki)
+[Click here](https://github.com/maozlev/OOP_Ex2/wiki/Pokemons-game-%E2%80%90-Explanation-of-the-game)
 
 
